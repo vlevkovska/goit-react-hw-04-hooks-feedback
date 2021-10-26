@@ -1,0 +1,11 @@
+.container {
+  margin: 30px;
+  padding: 20px;
+  width: 400px;
+
+  background-color: beige;
+  border-radius: 6px;
+}
+ul {
+  list-style: none;
+}
