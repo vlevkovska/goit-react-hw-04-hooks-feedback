@@ -1,65 +1,109 @@
-import { Component } from "react";
+import React, { useState } from 'react';
 
-import Container from "./Components/Container/Container";
-import Statistics from "./Components/Statistics/Statistics";
-import FeedbackOptions from "./Components/Feedback/FeedbackOptions";
-import Section from "./Components/Section/Section";
-import Notification from "./Components/Notification/Notification";
+import Container from './Components/Container/Container';
+import Statistics from './Components/Statistics/Statistics';
+import FeedbackOptions from './Components/Feedback/FeedbackOptions';
+import Section from './Components/Section/Section';
+import Notification from './Components/Notification/Notification';
 
-class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+function App() {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const onLeaveGoodFeedback = index => {
+    switch (index) {
+      case 'good':
+        setGood(state => state + 1);
+        break;
+      case 'neutral':
+        setNeutral(state => state + 1);
+        break;
+      case 'bad':
+        setBad(state => state + 1);
+        break;
+      default:
+        return;
+    }
   };
 
-  handleClick = (event) => {
-    this.setState((state) => ({
-      [event]: state[event] + 1,
-    }));
-    console.log("Кликнули на кнопку");
-  };
+  const sum = good + neutral + bad;
 
-  countTotalFeedback = () => {
-    const sum = Object.values(this.state).reduce((a, b) => a + b, 0);
-    return sum;
-  };
-
-  countPositiveFeedbackPercentage = () => {
-    const percentage = Math.round(
-      (this.state.good / this.countTotalFeedback()) * 100
-    );
+  const countPositiveFeedbackPercentage = () => {
+    const percentage = Math.round((good / sum) * 100);
     return percentage;
   };
-  render() {
-    const { good, neutral, bad } = this.state;
-    const obj = Object.keys(this.state);
-    const feedback = this.handleClick;
-    const total = this.countTotalFeedback();
-    const positivePercentage = this.countPositiveFeedbackPercentage();
-
-    return (
-      <Container>
-        <Section title="Please leave feedback">
-          <FeedbackOptions options={obj} handleClick={feedback} />
-        </Section>
-        <h2 title="Statistics"> </h2>
-        <Section title="Statistics">
-          {total > 0 ? (
-            <Statistics
-              good={good}
-              neutral={neutral}
-              bad={bad}
-              total={total}
-              positivePercentage={positivePercentage}
-            />
-          ) : (
-            <Notification title="No feedback given"></Notification>
-          )}
-        </Section>
-      </Container>
-    );
-  }
+  return (
+    <Container>
+      <Section title="Please leave feedback">
+        <FeedbackOptions
+          options={['good', 'neutral', 'bad']}
+          handleClick={onLeaveGoodFeedback}
+        />
+      </Section>
+      <h2 title="Statistics"> </h2>
+      <Section title="Statistics">
+        {sum > 0 ? (
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={sum}
+            positivePercentage={countPositiveFeedbackPercentage()}
+          />
+        ) : (
+          <Notification title="No feedback given"></Notification>
+        )}
+      </Section>
+    </Container>
+  );
 }
+// const [good, setGood] = useState(0);
+// const [neutral, setNeutral] = useState(0);
+// const [bad, setBad] = useState(0);
+// const handleClick = event => {
+//   const { id } = event.target;
+//   console.log('Кликнули на кнопку');
+//   if (id === 'good') {
+//     return setGood(prevGood => prevGood + 1);
+//   }
+//   if (id === 'neutral') {
+//     return setNeutral(prevNeutral => prevNeutral + 1);
+//   }
+//   if (id === 'bad') {
+//     return setBad(prevBad => prevBad + 1);
+//   }
+// };
+// const countTotalFeedback = () => {
+//   return good + neutral + bad;
+// };
+// const countPositiveFeedbackPercentage = () => {
+//   return Math.round((good / countTotalFeedback()) * 100);
+// };
+// return (
+//   <Container>
+//     <Section title="Please leave feedback">
+//       <FeedbackOptions
+//         options={{ good, neutral, bad }}
+//         handleClick={handleClick}
+//       />
+//     </Section>
+//     <h2 title="Statistics"> </h2>
+//     <Section title="Statistics">
+//       {countTotalFeedback() ? (
+//         <Statistics
+//           good={good}
+//           neutral={neutral}
+//           bad={bad}
+//           total={countTotalFeedback}
+//           positivePercentage={countPositiveFeedbackPercentage()}
+//         />
+//       ) : (
+//         <Notification title="No feedback given"></Notification>
+//       )}
+//     </Section>
+//   </Container>
+// );
+// }
 
 export default App;
